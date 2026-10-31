@@ -194,7 +194,7 @@ class Drawing:
         self.svgdefs: list[str] = []
         self.dwgparams: dict[str, Any] = schemdrawstyle.copy()
         self.dwgparams.update(kwargs)  # To maintain support for arguments that moved to config method
-        self.unit = kwargs.get('unit', schemdrawstyle.get('unit'))
+        self.unit = kwargs.get('unit', schemdrawstyle.get('unit', 3))
 
         self._here: XY = Point((0, 0))
         self._theta: float = 0

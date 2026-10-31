@@ -64,6 +64,7 @@ class Container(Element):
 
     def add(self, element: Element) -> 'Container':
         ''' Add an element to the container '''
+        element.elmparams['in_container'] = True
         self.elements.append(element)
         self.drawing.add(element)
         return self

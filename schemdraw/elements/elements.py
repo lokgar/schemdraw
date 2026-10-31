@@ -312,7 +312,7 @@ class Element:
 
     def hold(self) -> 'Element':
         ''' Do not move the Drawing `here` position after placing this element '''
-        self._userparams['move_cur'] = False
+        self._userparams['hold'] = True
         return self
 
     def label(self,
@@ -428,6 +428,11 @@ class Element:
         else:
             theta = self.params.get('theta', dwgtheta)
 
+        self.placed_cursor = {
+            # Store position for serialization
+            'xy': xy,
+            'theta': theta }
+
         if anchor is not None:
             self._localshift = -Point(self.anchors[anchor])
         self.transform = Transform(theta, xy, self._localshift, zoom)
@@ -465,7 +470,7 @@ class Element:
         if drop is not None and drop in self.anchors:
             # User specified as anchor position
             self.absdrop = self.transform.transform(self.anchors[drop]), theta
-        elif drop is not None and self.params.get('move_cur', True):
+        elif drop is not None and not self.params.get('hold', False):
             if self.params.get('droptheta', None) is not None:
                 # Element-specified drop angle
                 self.absdrop = self.transform.transform(drop), self.params.get('droptheta', 0.)
@@ -850,7 +855,7 @@ class Element2Term(Element):
             warnings.warn(f"Duplicated direction parameter in element. `{self._userparams['d']}` changed to `up`.")
         self._userparams['d'] = 'up'
         if length:
-            self._userparams['l'] = length
+            self._userparams['length'] = length
         return self
 
     def down(self, length: Optional[float] = None) -> 'Element':
@@ -859,7 +864,7 @@ class Element2Term(Element):
             warnings.warn(f"Duplicated direction parameter in element. `{self._userparams['d']}` changed to `down`.")
         self._userparams['d'] = 'down'
         if length:
-            self._userparams['l'] = length
+            self._userparams['length'] = length
         return self
 
     def left(self, length: Optional[float] = None) -> 'Element':
@@ -868,7 +873,7 @@ class Element2Term(Element):
             warnings.warn(f"Duplicated direction parameter in element. `{self._userparams['d']}` changed to `left`.")
         self._userparams['d'] = 'left'
         if length:
-            self._userparams['l'] = length
+            self._userparams['length'] = length
         return self
 
     def right(self, length: Optional[float] = None) -> 'Element':
@@ -877,12 +882,12 @@ class Element2Term(Element):
             warnings.warn(f"Duplicated direction parameter in element. `{self._userparams['d']}` changed to `right`.")
         self._userparams['d'] = 'right'
         if length:
-            self._userparams['l'] = length
+            self._userparams['length'] = length
         return self
 
     def length(self, length: float) -> 'Element2Term':
         ''' Sets total length of element '''
-        self._userparams['l'] = length
+        self._userparams['length'] = length
         return self
 
     def endpoints(self, start: XY, end: XY) -> 'Element2Term':
@@ -915,7 +920,7 @@ class Element2Term(Element):
         if not self._positioned:
             self._position()
 
-        totlen = self.params.get('l', self.params.get('unit', 3))
+        totlen = self.params.get('length', self.params.get('unit', 3))
         endpts = self.params.get('endpts', None)
         to = self.params.get('to', None)
         tox = self.params.get('tox', None)

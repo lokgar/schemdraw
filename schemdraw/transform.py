@@ -24,8 +24,9 @@ class Transform:
         self.shift = Point(globalshift)
         self.localshift = Point(localshift)
         if isinstance(zoom, (int, float)):
-            zoom = Point((zoom, zoom))
-        self.zoom = zoom
+            self.zoom = Point((zoom, zoom))
+        else:
+            self.zoom = Point(zoom)
 
     def __repr__(self):
         return f'Transform: xy={self.shift}; theta={self.theta}; scale={self.zoom}; lshift={self.localshift}'

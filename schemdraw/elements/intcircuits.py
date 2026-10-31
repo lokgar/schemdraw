@@ -71,6 +71,7 @@ class Ic(Element):
             slant: Angle to slant top/bottom of IC (ie for multiplexers)
             pinspacing: spacing between pins, in drawing units
     '''
+    fixed_pins = False   # If pins are fixed by the class definition
     _element_defaults = {
         'pinspacing': 0.0,
         'edgepadH': 0.5,
@@ -619,6 +620,7 @@ class DFlipFlop(Ic):
             * PRE
             * CLR
     '''
+    fixed_pins = True  # Don't serialize pin definitions
     _element_defaults = {
         'size': (2, 3)
     }
@@ -653,6 +655,7 @@ class JKFlipFlop(Ic):
             * PRE
             * CLR
     '''
+    fixed_pins = True  # Don't serialize pin definitions
     _element_defaults = {
         'size': (2, 3)
     }
@@ -681,6 +684,7 @@ class VoltageRegulator(Ic):
             * out
             * gnd
     '''
+    fixed_pins = True  # Don't serialize pin definitions
     _element_defaults = {
         'size': (2, 1.5)
     }
@@ -693,6 +697,7 @@ class VoltageRegulator(Ic):
 
 class Ic555(Ic):
     ''' 555 Timer IC '''
+    fixed_pins = True  # Don't serialize pin definitions
     _element_defaults = {
         'edgepadW': 0.5,
         'edgepadH': 1,
@@ -870,6 +875,7 @@ class SevenSegment(Ic):
             * cathode
             * anode
     '''
+    fixed_pins = True  # Don't serialize pin definitions
     _element_defaults = {
         'decimal': False,
         'digit': 8,
